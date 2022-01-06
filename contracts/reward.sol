@@ -27,7 +27,6 @@ contract Reward is Ownable {
   uint256 public payoffPeriodInDays;
   uint256 public payoffTimes;
 
-
   constructor (
       uint256 _payoffPeriodInDays,
       uint256 _payoffTimes,
@@ -71,11 +70,15 @@ contract Reward is Ownable {
       seasonOverallRewards[season] = reward;
   }
 
-  function setPayoffTimes(uint256 payoffTimes) public onlyOwner {
+  function setPayoffTimes(uint256 payoffTimes) external onlyOwner {
       payoffTimes = payoffTimes;
   }
 
-  function setPayoffPeriodInDays(uint256 payoffPeriodInDays) public onlyOwner {
+  function setPayoffPeriodInDays(uint256 payoffPeriodInDays) external onlyOwner {
       payoffPeriodInDays = payoffPeriodInDays;
+  }
+
+  function setTokenAddress(address tokenAddress) external onlyOwner {
+      _spay = tokenAddress;
   }
 }
