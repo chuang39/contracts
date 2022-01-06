@@ -51,10 +51,10 @@ contract Reward is Ownable {
   function claim(int season) external {
       address user = _msgSender();
       require(block.timestamp >= nextRewardTime[season][user], "Next reward is not ready");
-      require(nextRewardTime[season][user] < seasonRewardStartTime[season].add(payoffPeriodInDays days), "Next reward is not ready");
+      require(nextRewardTime[season][user] < seasonRewardStartTime[season].add(payoffPeriodInDays*1 days), "Next reward is not ready");
 
-      uint256 coolingPeriodInDays = payoffPeriodInDays.div(payoffTimes)
-      uint256 portion = block.timestamp.sub(nextRewardTime[season][user]).div(coolingPeriodInDays days).add(1);
+      uint256 coolingPeriodInDays = payoffPeriodInDays.div(payoffTimes);
+      uint256 portion = block.timestamp.sub(nextRewardTime[season][user]).div(coolingPeriodInDays*1 days).add(1);
       if (portion > payoffTimes) {
           portion = payoffTimes;
       }
@@ -63,22 +63,22 @@ contract Reward is Ownable {
       uint256 totalReward = unitReward.mul(portion);
 
       require(_spay.transfer(user, totalReward), "Transfer failed");
-      nextRewardTime[season][user] = nextRewardTime[season][user].add(portion.mul(coolingPeriodInDays days));
+      nextRewardTime[season][user] = nextRewardTime[season][user].add(portion.mul(coolingPeriodInDays*1 days));
   }
 
   function setSeasonOverallReward(int season, uint256 reward) external onlyOwner {
       seasonOverallRewards[season] = reward;
   }
 
-  function setPayoffTimes(uint256 payoffTimes) external onlyOwner {
-      payoffTimes = payoffTimes;
+  function setPayoffTimes(uint256 _payoffTimes) external onlyOwner {
+      payoffTimes = _payoffTimes;
   }
 
-  function setPayoffPeriodInDays(uint256 payoffPeriodInDays) external onlyOwner {
-      payoffPeriodInDays = payoffPeriodInDays;
+  function setPayoffPeriodInDays(uint256 _payoffPeriodInDays) external onlyOwner {
+      payoffPeriodInDays = _payoffPeriodInDays;
   }
 
-  function setTokenAddress(address tokenAddress) external onlyOwner {
-      _spay = tokenAddress;
+  function setTokenAddress(address _tokenAddress) external onlyOwner {
+      _spay = ERC20(_tokenAddress);
   }
 }
